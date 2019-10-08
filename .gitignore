@@ -1,3 +1,8 @@
 emptyExample
 molnart/bin
 molnart/molnart.xcodeproj
+addons.make
+config.make
+openFrameworks-Info.plist
+Makefile
+Project.xcconfig
