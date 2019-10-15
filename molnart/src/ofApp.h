@@ -22,5 +22,9 @@ public:
     void carresNoir();
     void shallWeTakeAWalk();
     void untitled6_1972();
+    void grisSurArgent();
+    void dispersesParLeVentAuLarge();
+    void hommageADurer();
+    void hommageADurer1990();
 };
 
