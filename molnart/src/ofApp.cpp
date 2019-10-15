@@ -21,9 +21,9 @@ void ofApp::draw(){
     //shallWeTakeAWalk();
     //untitled6_1972();
     //grisSurArgent();
-    //dispersesParLeVentAuLarge();
+    dispersesParLeVentAuLarge();
     //hommageADurer();
-    hommageADurer1990();
+    //hommageADurer1990();
 }
 
 //--------------------------------------------------------------
@@ -85,22 +85,19 @@ void ofApp::dispersesParLeVentAuLarge() {
     int width = 1024;
     
     int margin = 10;
-    int sq = MAX(mouseX%30 + 3, 3);
+    int sq = MAX(mouseX%20 + 3, 3);
     int sqSize = ((height - margin)/sq);
     int sqStep = sqSize/6;
     
-    ofBackground(230);
     ofDisableAlphaBlending();
     ofEnableBlendMode(OF_BLENDMODE_MULTIPLY);
-    
     
     for (int i = 0; i < sq; i++) {
         for (int j = 0; j < sq; j ++) {
             ofPushMatrix();
             ofTranslate((i * sqSize) + (width-height)/2 + margin/2 + (ofNoise(i,j) * sqSize), (j * sqSize) + margin/2 + (ofNoise(i,j) * sqSize));
             ofRotate(ofRandom(-30,30));
-            //ofFill();
-            ofSetColor(160,24,38);
+            ofSetColor(215, 0, 33);
             ofDrawRectangle(0, -sqSize/2, sqSize - 5, sqSize - 5);
             ofPopMatrix();
         }
