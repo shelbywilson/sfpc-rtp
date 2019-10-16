@@ -6,3 +6,5 @@ config.make
 openFrameworks-Info.plist
 Makefile
 Project.xcconfig
+whitney/bin
+whitney/whitney.xcodeproj
