@@ -11,64 +11,50 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-//    float xorig = 500;
-//    float yorig = 500;
-//    float radius = 200;
-//    float angle = ofGetElapsedTimef();
-//    float x = xorig + radius * cos(angle*1.0);
-//    float y = yorig + radius * sin(angle*3.0);
-//
-//    ofDrawCircle(x,y,3);
-//
-//    if (line.size() > 300){
-//        line.getVertices().erase(line.getVertices().begin());
-//    }
-//    line.addVertex(x,y);
-//    line.draw();
+    t = ofGetElapsedTimef();
     
-    drawGreen();
-    drawRed();
-    drawBlue();
-    drawWhite();
+    if (t >= cues[0] && t < cues[3]) {
+        drawHarmonicLines();
+    } else if (t >= cues[3]) {
+        drawVerticalLines();
+    }
+//    } else if (t >= cues[2]) {
+//            drawGreen();
+//            drawRed();
+//            drawBlue();
+//            drawWhite();
+//    }
+    
+    cout << t << endl;
 }
 
 void ofApp::drawRed() {
-    float currDeg = degree;
+    float currDeg = redIterator;
     float radian = 0;
     float x = 0;
     float y = 0;
     float p = 0;
     
-    ofSetColor(255, 0, 0);
-    float petals = 1/2; // number of petals
+    ofSetColor(243, 15, 35);
     
     while (currDeg > 0) {
         
         radian = getRadian(currDeg);
-        p = amp*cos(0.5*radian + (PI/4)); //do the polar coordinates
-        x = x0+p*cos(radian); // convert to Cartesian
-        y = y0+p*sin(radian); // convert to Cartesian
-        
-        //    if (line.size() > 700){
-        //        line.getVertices().erase(line.getVertices().begin());
-        //    }
-        //    line.addVertex(x,y);
-        //    line.draw();
+        p = amp*cos(0.5*radian + (PI/4));
+        x = x0+p*cos(radian);
+        y = y0+p*sin(radian);
         
         ofDrawCircle(x, y, 5);
         currDeg -= 4;
     }
     
-    if (currDeg != 360) {
-        degree++;
-    } else {
-        degree = 0;
+    if (redIterator < 720) {
+        redIterator++;
     }
 }
 
 void ofApp::drawGreen() {
-    ofSetColor(0, 255, 20);
-    float petals = 1/2; // number of petals
+    ofSetColor(80, 176, 118);
     int j = 0;
     float radian = 0;
     float x = 0;
@@ -79,15 +65,10 @@ void ofApp::drawGreen() {
         radian = getRadian(i);
         p = amp*cos(0.5*radian + (PI/4));
         x = x0+(p*1.2)*cos(radian);
-        y = y0+(p*1.3)*sin(radian);
+        y = y0+(p*1.35)*sin(radian);
         
         ofPolyline line;
         line.addVertex(x,y);
-        
-        //        ofSetColor(255);
-        //
-        //        ofDrawCircle(x, y, 3);
-        //        ofDrawBitmapString(std::to_string(j), x, y);
         
         if (j == 45) {
             line.getVertices().erase(line.getVertices().begin());
@@ -105,11 +86,12 @@ void ofApp::drawGreen() {
         y = y0 + amp * sin(radian);
         line.addVertex(x,y);
         
-        //        ofDrawCircle(x, y, 5);
-        //        ofDrawBitmapString(std::to_string(j), x0 + amp * cos(radian), y0 + amp * sin(radian));
         
-        //        ofSetColor(0, 255, 20);
-        line.draw();
+        //if (greenIterator >= 720) {
+            line.draw();
+//        } else {
+//            ofDrawCircle(x, y, greenIterator/720);
+//        }
         
         if (i == 180) {
             i = 356;
@@ -117,45 +99,9 @@ void ofApp::drawGreen() {
         j++;
     }
     
-    //    for (int i = 270; i < 360; i += 6) {
-    //
-    //        radian = PI/180*(i);
-    //        p = amp*cos(0.25*radian + (PI/4));
-    //        x = x0+p*cos(radian) - amp/4;
-    //        y = y0+p*sin(radian);
-    //
-    //        ofPolyline line;
-    //
-    //        //    if (line.size() > 700){
-    //        //        line.getVertices().erase(line.getVertices().begin());
-    //        //    }
-    //
-    //        ofSetColor(255);
-    //        ofDrawCircle(x,y, 3);
-    //
-    //        ofDrawBitmapString(std::to_string(i), x, y);
-    //
-    ////        if (((i <= 360 && i >= 180) || i >= 540) == true) {
-    ////            line.addVertex(x,y);
-    ////
-    ////            ofSetColor(0, 255, 20);
-    //////            ofDrawCircle(x0 + amp*cos(radian), y0 + amp*sin(radian), 8);
-    //////            ofDrawBitmapString(std::to_string(i), x0 + amp*cos(radian) + 5, y0 + amp*sin(radian));
-    //////
-    //////            ofSetColor(255, 0, 0);
-    //////            ofDrawCircle(x,y, 3);
-    ////
-    //////            radian = PI/180*(i - 360);
-    //////            p = amp*cos(0.5*radian + (PI/4));
-    //////            x = x0+p*cos(radian);
-    //////            y = y0+p*sin(radian);
-    //////            line.addVertex(x, y);
-    ////
-    ////
-    ////            line.draw();
-    ////        }
-    //        ofSetColor(0, 255, 20);
-    //    }
+    if (greenIterator < 720) {
+        greenIterator++;
+    }
 }
 
 void ofApp::drawBlue() {
@@ -164,12 +110,12 @@ void ofApp::drawBlue() {
     float x;
     float y;
     
-    ofSetColor(10, 40, 255);
+    ofSetColor(39, 123, 226);
     
     while (currDeg > 0) {
         radian = getRadian(currDeg);
-        x = x0+ (amp * 1.1) *cos(radian);
-        y = y0+ (amp * 1.1) *sin(radian);
+        x = x0+ (amp * 1.07) *cos(radian);
+        y = y0+ (amp * 1.07) *sin(radian);
         
         ofDrawCircle(x, y, 5);
         currDeg -= 4;
@@ -180,16 +126,17 @@ void ofApp::drawWhite() {
     float radian;
     float x;
     float y;
-    float r = amp * 1.2 - (ofGetElapsedTimef()/360);
+    float r = amp * 1.2;
     
     ofSetColor(255, 255, 255);
     ofPolyline line;
     
     for (int i = 0; i < 4; i ++) {
         for (int j = 0; j < 16; j ++) {
+            line.clear();
             radian = getRadian((90 * j/16) + (90*i));
-            x = x0+ r*cos(radian);
-            y = y0+ r*sin(radian);
+            x = x0+r*cos(radian); //* sin(ofGetElapsedTimef() //1.5 * sin(ofGetElapsedTimef())
+            y = y0+r*sin(radian); //(1.5 * -sin(ofGetElapsedTimef())
 
             line.addVertex(x,y);
             
@@ -222,6 +169,69 @@ void ofApp::drawWhite() {
             line.draw();
         }
     }
+}
+
+void ofApp::drawHarmonicLines() {
+    float radian;
+    float x;
+    float y;
+    
+    
+    float maxY = ofGetHeight();//ofGetHeight()*3/4 + (cos(t/2) * ofGetHeight()/4);
+    float minY = 0; //ofGetHeight()*1/4 - (cos(t/2) * ofGetHeight()/4);
+    
+    float maxJ = MIN((t - cues[0]) * 45, 360);
+    
+    if (t > cues[2]) {
+        minY = ofGetHeight()*1/4 - (cos((t - cues[2])/2) * ofGetHeight()/4);
+        maxY = ofGetHeight()*3/4 + (cos((t - cues[2])/2) * ofGetHeight()/4);
+    } 
+    
+    for (int i = 1; i < 11; i ++) {
+        ofSetColor(200 * i/5 + 10, 140 * sin(i) + 10, 251 * cos(i) + 30);
+        ofPolyline line;
+        ofSetLineWidth(3);
+        
+        float amp = 20 * 10/i;
+        
+        if (i == 10) {
+            ofSetColor(255,255,255);
+        }
+        
+        if (t > cues[1]) {
+            //        maxY *= (t - cues[1])/5;
+            //        minY = ofGetHeight() - maxY;
+            //amp *= 1/(t - cues[1] + 1);
+        }
+        
+        for (float j = 0; j < maxJ; j += 0.25) {
+            radian = getRadian(j);
+            
+            if (t > cues[1]) {
+                amp = amp * cos((t - cues[1]) / 5);
+            }
+//            if (t > cues[2]) {
+//                radian = (t - cues[2] + PI/6);
+//            }
+            
+            radian = radian * i + PI;
+            
+            x = x0+amp*sin(radian);
+            y = ofMap(j, 360, 0, minY, maxY);
+            
+            if (j + 0.25 > maxJ) {
+                ofDrawCircle(x,y,3);
+            }
+            line.addVertex(x,y);
+        }
+        
+        line.draw();
+    }
+}
+
+void ofApp::drawVerticalLines() {
+    ofSetColor(255);
+    ofDrawCircle(ofGetWidth()/2, ofGetHeight()/2, 2);
 }
 
 float ofApp::getRadian(float degree) {

@@ -26,15 +26,27 @@ class ofApp : public ofBaseApp{
         void drawBlue();
         void drawWhite();
     
+        void drawHarmonicLines();
+    
+        void drawVerticalLines();
+    
         float getRadian(float degree);
 		
         ofPolyline line;
     
+        float t;
+    
+        float cues [5] = {2, 10.5, 15, 21, 28};
+        //float cues [3] = {0, 0.5, 5};
+    
         // global
-        int amp = 300; // size of the rose
+        int amp = 260; // size of the rose
         float x0 = ofGetWidth()/2;
         float y0 = ofGetHeight()/2;
     
         // red
-        float degree = 0;
+        float redIterator = 0;
+    
+        // green
+        float greenIterator = 0;
 };
