@@ -25,7 +25,7 @@
 ### 25 Carres noir 1989 / Interstices horizontales, 1989
 #### original
 ![original](/molnart/images/25carres_original.jpeg)
-![original](/molnart/images/carres_original.jpeg)
+![original](/molnart/images/carres_original.png)
 
 #### recreation
 ![recreation](/molnart/images/carres_recreation.gif)
