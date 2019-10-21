@@ -28,7 +28,7 @@ class ofApp : public ofBaseApp{
     
         void drawHarmonicLines();
     
-        void drawVerticalLines();
+        void drawMatrix(float startTime);
     
         float getRadian(float degree);
 		
@@ -36,17 +36,28 @@ class ofApp : public ofBaseApp{
     
         float t;
     
-        float cues [5] = {2, 10.5, 15, 21, 28};
+        float cues [5] = {2, 10.5, 15, 21, 83.2};
         //float cues [3] = {0, 0.5, 5};
     
         // global
-        int amp = 260; // size of the rose
+        int defaultAmp = 260; // size of the rose
         float x0 = ofGetWidth()/2;
         float y0 = ofGetHeight()/2;
     
+        // white
+        float whiteT = 0;
+    
         // red
         float redIterator = 0;
+        float redT = 0;
+    
+        // blue
+        float blueT = 0;
     
         // green
-        float greenIterator = 0;
+        float greenT = 0;
+    
+        // matrix
+        float matrixT = 0;
+        float matrixPos [18];
 };

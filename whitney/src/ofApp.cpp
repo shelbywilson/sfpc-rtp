@@ -15,17 +15,11 @@ void ofApp::draw(){
     
     if (t >= cues[0] && t < cues[3]) {
         drawHarmonicLines();
-    } else if (t >= cues[3]) {
-        drawVerticalLines();
+    } else if (t >= cues[3] && t < cues[4]) {
+        drawMatrix(cues[3]);
+    } else if (t >= cues[4]) {
+        drawWhite();
     }
-//    } else if (t >= cues[2]) {
-//            drawGreen();
-//            drawRed();
-//            drawBlue();
-//            drawWhite();
-//    }
-    
-    cout << t << endl;
 }
 
 void ofApp::drawRed() {
@@ -34,40 +28,53 @@ void ofApp::drawRed() {
     float x = 0;
     float y = 0;
     float p = 0;
-    
-    ofSetColor(243, 15, 35);
-    
-    while (currDeg > 0) {
-        
-        radian = getRadian(currDeg);
-        p = amp*cos(0.5*radian + (PI/4));
-        x = x0+p*cos(radian);
-        y = y0+p*sin(radian);
-        
-        ofDrawCircle(x, y, 5);
-        currDeg -= 4;
-    }
+    float n = 0.5;
     
     if (redIterator < 720) {
         redIterator++;
+    } else {
+        drawGreen();
+    }
+    
+    redT += 0.001;
+    
+    ofSetColor(243, 15, 35);
+    
+    if (redT > 0.9) {
+        n = ofMap(redT - 0.9, 0, 14, 0.5, 30);
+    }
+    
+    while (currDeg > 0) {
+        radian = getRadian(currDeg);
+        
+        p = defaultAmp * cos(n*radian + (PI/4));
+        x = x0 + p * cos(radian);
+        y = y0 + p * sin(radian);
+        
+        ofDrawCircle(x, y, 5);
+        currDeg -= 4;
     }
 }
 
 void ofApp::drawGreen() {
     ofSetColor(80, 176, 118);
+    ofSetLineWidth(1);
     int j = 0;
     float radian = 0;
     float x = 0;
     float y = 0;
     float p = 0;
     
+    greenT += 1;
+    
     for (int i = 0; i < 540; i += 4) {
         radian = getRadian(i);
-        p = amp*cos(0.5*radian + (PI/4));
+        p = defaultAmp*cos(0.5*radian + (PI/4));
         x = x0+(p*1.2)*cos(radian);
         y = y0+(p*1.35)*sin(radian);
         
         ofPolyline line;
+        
         line.addVertex(x,y);
         
         if (j == 45) {
@@ -82,25 +89,17 @@ void ofApp::drawGreen() {
             radian = PI/180*((j - 46) * 4);
         }
         
-        x = x0 + amp * cos(radian);
-        y = y0 + amp * sin(radian);
+        x = ofMap(MIN(greenT * 5, 1000), 0, 1000, x, x0 + defaultAmp * cos(radian));
+        y = ofMap(MIN(greenT * 5, 1000), 0, 1000, y, y0 + defaultAmp * sin(radian));
+        
         line.addVertex(x,y);
-        
-        
-        //if (greenIterator >= 720) {
-            line.draw();
-//        } else {
-//            ofDrawCircle(x, y, greenIterator/720);
-//        }
+    
+        line.draw();
         
         if (i == 180) {
             i = 356;
         }
         j++;
-    }
-    
-    if (greenIterator < 720) {
-        greenIterator++;
     }
 }
 
@@ -109,64 +108,116 @@ void ofApp::drawBlue() {
     float radian;
     float x;
     float y;
+    float r = defaultAmp * 1.07;
     
     ofSetColor(39, 123, 226);
     
+    blueT += 0.001;
+    
+    if (blueT > 2) {
+        r = ofMap(blueT - 2, 0, 3, defaultAmp * 1.07, ofGetHeight()/2);
+    }
+    
     while (currDeg > 0) {
         radian = getRadian(currDeg);
-        x = x0+ (amp * 1.07) *cos(radian);
-        y = y0+ (amp * 1.07) *sin(radian);
         
-        ofDrawCircle(x, y, 5);
+        if (blueT > 1) {
+            x = cos((cos(blueT - 1) * radian) + ((blueT - 0.2) * 20));
+            y = sin(radian);
+        } else {
+             x = cos(radian);
+             y = sin(radian);
+        }
+        
+        x *= r;
+        y *= r;
+        
+        x += x0;
+        y += y0;
+        
+        ofDrawCircle(x, y, MIN(ofMap(blueT, 0, 0.1, 0, 5), 5));
         currDeg -= 4;
     }
 }
 
 void ofApp::drawWhite() {
     float radian;
-    float x;
-    float y;
-    float r = amp * 1.2;
+    float x1;
+    float y1;
+    float x2;
+    float y2;
+    float startX2;
+    float startY2;
+    float r = defaultAmp * 1.2;
+    
+    whiteT += 0.001;
+    
+    if (whiteT > 0.3) {
+        drawRed();
+    }
+    if (whiteT > 0.5) {
+        drawBlue();
+    }
     
     ofSetColor(255, 255, 255);
     ofPolyline line;
+    ofSetLineWidth(1.5);
     
     for (int i = 0; i < 4; i ++) {
-        for (int j = 0; j < 16; j ++) {
+        for (int j = 1; j < 16; j ++) {
             line.clear();
-            radian = getRadian((90 * j/16) + (90*i));
-            x = x0+r*cos(radian); //* sin(ofGetElapsedTimef() //1.5 * sin(ofGetElapsedTimef())
-            y = y0+r*sin(radian); //(1.5 * -sin(ofGetElapsedTimef())
-
-            line.addVertex(x,y);
             
-            //ofDrawBitmapString(std::to_string(j), x, y);
+            float iterator = j;
             
-            x = x0;
-            y = y0;
+            if (i%2 == 1) {
+                iterator = 16 - j;
+                
+                startX2 = x0+r*cos(getRadian(90 + (90*i)));
+                startY2 = y0+r*sin(getRadian(90 + (90*i)));
+            } else {
+                startX2 = x0+r*cos(getRadian(90*i));
+                startY2 = y0+r*sin(getRadian(90*i));
+            }
+            
+            radian = getRadian((90 * iterator/16) + (90*i));
+            
+            x1 = x0;
+            y1 = y0;
             
             switch(i) {
                 case 0:
-                    x += r;
-                    y += r;
+                    x1 += r;
+                    y1 += r;
                     break;
                 case 1:
-                    x -= r;
-                    y += r;
+                    x1 -= r;
+                    y1 += r;
                     break;
                 case 2:
-                    x -= r;
-                    y -= r;
+                    x1 -= r;
+                    y1 -= r;
                     break;
                 default:
-                    x += r;
-                    y -= r;
+                    x1 += r;
+                    y1 -= r;
                     break;
             }
             
-            line.addVertex(x,y);
+            line.addVertex(x1,y1);
+            
+            if (whiteT > 1.3) {
+                x2 = ofMap(MIN((whiteT - 1.3) * j/2, 1), 0, 1, x0+r*cos(radian), startX2);
+                y2 = ofMap(MIN((whiteT - 1.3) * (j + 2), 1), 0, 1, y0+r*sin(radian), y1);
+            } else {
+                x2 = ofMap(MIN(whiteT * j/2, 1), 0, 1, startX2, x0+r*cos(radian));
+                y2 = ofMap(MIN(whiteT * j/2, 1), 0, 1, startY2, y0+r*sin(radian));
+            }
+
+            line.addVertex(x2,y2);
 
             line.draw();
+            
+//            ofDrawBitmapString(to_string(j), x2, y2);
         }
     }
 }
@@ -210,9 +261,6 @@ void ofApp::drawHarmonicLines() {
             if (t > cues[1]) {
                 amp = amp * cos((t - cues[1]) / 5);
             }
-//            if (t > cues[2]) {
-//                radian = (t - cues[2] + PI/6);
-//            }
             
             radian = radian * i + PI;
             
@@ -229,9 +277,61 @@ void ofApp::drawHarmonicLines() {
     }
 }
 
-void ofApp::drawVerticalLines() {
+void ofApp::drawMatrix(float startTime) {
     ofSetColor(255);
-    ofDrawCircle(ofGetWidth()/2, ofGetHeight()/2, 2);
+    ofSetLineWidth(2);
+    
+    int maxAmp = floor(ofGetWidth() * 1/3);
+    float amp = MIN((t - startTime)*(t - startTime), maxAmp);
+    
+    if (amp >= maxAmp/2) {
+        matrixT += 0.001;
+    }
+    
+    for (int i = 0; i < 18; i += 1) {
+        float x = ofGetWidth()/2 + amp * cos((t - startTime) + (i * matrixT));
+        float y = ofGetHeight()/2;
+        
+        if (matrixT > 0.5) {
+            y += cos(i * 2) * amp * MIN(matrixT - 0.5, 0.5);
+        }
+        
+        float lineH = MIN((200 * (matrixT - 1)) + 2.25, 140);
+        
+        if (matrixT > 2.5) {
+            float matrixTDiff = sin(MIN(getRadian(matrixT - 2.5) * 400, PI/2));
+            
+            lineH = ofMap(matrixTDiff, 0, 1, 140, defaultAmp * 1.2);
+            ofSetLineWidth(ofMap(matrixTDiff, 0, 1, 2, 1.5));
+            
+            switch(i%4) {
+                case 0:
+                    x = ofMap(matrixTDiff, 0, 1, x, ofGetWidth()/2 - (defaultAmp * 1.2));
+                    y = ofMap(matrixTDiff, 0, 1, y, ofGetHeight()/2 - (defaultAmp * 1.2) + lineH/2);
+                    break;
+                case 1:
+                    x = ofMap(matrixTDiff, 0, 1, x, ofGetWidth()/2 + (defaultAmp * 1.2));
+                    y = ofMap(matrixTDiff, 0, 1, y, ofGetHeight()/2 + (defaultAmp * 1.2) - lineH/2);
+                    break;
+                case 2:
+                    x = ofMap(matrixTDiff, 0, 1, x, ofGetWidth()/2 - (defaultAmp * 1.2));
+                    y = ofMap(matrixTDiff, 0, 1, y, ofGetHeight()/2 + (defaultAmp * 1.2) - lineH/2);
+                    break;
+                case 3:
+                    x = ofMap(matrixTDiff, 0, 1, x, ofGetWidth()/2 + (defaultAmp * 1.2));
+                    y = ofMap(matrixTDiff, 0, 1, y, ofGetHeight()/2 - (defaultAmp * 1.2) + lineH/2);
+                    break;
+                default:
+                    break;
+            }
+        }
+    
+        if (matrixT > 1) {
+            ofDrawLine(x, y - lineH/2, x, y + lineH/2);
+        } else {
+            ofDrawCircle(x, y, 2);
+        }
+    }
 }
 
 float ofApp::getRadian(float degree) {
