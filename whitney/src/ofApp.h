@@ -36,8 +36,7 @@ class ofApp : public ofBaseApp{
     
         float t;
     
-        float cues [5] = {2, 10.5, 15, 21, 83.2};
-        //float cues [3] = {0, 0.5, 5};
+        float cues [4] = {2, 10.5, 15, 21};
     
         // global
         int defaultAmp = 260; // size of the rose
@@ -46,6 +45,7 @@ class ofApp : public ofBaseApp{
     
         // white
         float whiteT = 0;
+        bool isDrawWhite = false;
     
         // red
         float redIterator = 0;

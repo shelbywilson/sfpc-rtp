@@ -15,9 +15,9 @@ void ofApp::draw(){
     
     if (t >= cues[0] && t < cues[3]) {
         drawHarmonicLines();
-    } else if (t >= cues[3] && t < cues[4]) {
+    } else if (t >= cues[3] && isDrawWhite == false) {
         drawMatrix(cues[3]);
-    } else if (t >= cues[4]) {
+    } else if (isDrawWhite == true) {
         drawWhite();
     }
 }
@@ -40,8 +40,8 @@ void ofApp::drawRed() {
     
     ofSetColor(243, 15, 35);
     
-    if (redT > 0.9) {
-        n = ofMap(redT - 0.9, 0, 14, 0.5, 30);
+    if (redT > 0.95) {
+        n = ofMap(redT - 0.95, 0, 14, 0.5, 30);
     }
     
     while (currDeg > 0) {
@@ -115,14 +115,14 @@ void ofApp::drawBlue() {
     blueT += 0.001;
     
     if (blueT > 2) {
-        r = ofMap(blueT - 2, 0, 3, defaultAmp * 1.07, ofGetHeight()/2);
+        r = ofMap(MIN((blueT - 2) * 5, 3), 0, 3, defaultAmp * 1.07, ofGetHeight * 0.45);
     }
     
     while (currDeg > 0) {
         radian = getRadian(currDeg);
         
         if (blueT > 1) {
-            x = cos((cos(blueT - 1) * radian) + ((blueT - 0.2) * 20));
+            x = cos((cos(blueT - 1) * radian) + ((blueT - 1) * 20));
             y = sin(radian);
         } else {
              x = cos(radian);
@@ -206,8 +206,8 @@ void ofApp::drawWhite() {
             line.addVertex(x1,y1);
             
             if (whiteT > 1.3) {
-                x2 = ofMap(MIN((whiteT - 1.3) * j/2, 1), 0, 1, x0+r*cos(radian), startX2);
-                y2 = ofMap(MIN((whiteT - 1.3) * (j + 2), 1), 0, 1, y0+r*sin(radian), y1);
+                x2 = ofMap(MIN((whiteT - 1.3) * j * 4, 1), 0, 1, x0+r*cos(radian), startX2);
+                y2 = ofMap(MIN((whiteT - 1.3) * j * 4, 1), 0, 1, y0+r*sin(radian), y1);
             } else {
                 x2 = ofMap(MIN(whiteT * j/2, 1), 0, 1, startX2, x0+r*cos(radian));
                 y2 = ofMap(MIN(whiteT * j/2, 1), 0, 1, startY2, y0+r*sin(radian));
@@ -228,8 +228,8 @@ void ofApp::drawHarmonicLines() {
     float y;
     
     
-    float maxY = ofGetHeight();//ofGetHeight()*3/4 + (cos(t/2) * ofGetHeight()/4);
-    float minY = 0; //ofGetHeight()*1/4 - (cos(t/2) * ofGetHeight()/4);
+    float maxY = ofGetHeight();
+    float minY = 0; 
     
     float maxJ = MIN((t - cues[0]) * 45, 360);
     
@@ -247,12 +247,6 @@ void ofApp::drawHarmonicLines() {
         
         if (i == 10) {
             ofSetColor(255,255,255);
-        }
-        
-        if (t > cues[1]) {
-            //        maxY *= (t - cues[1])/5;
-            //        minY = ofGetHeight() - maxY;
-            //amp *= 1/(t - cues[1] + 1);
         }
         
         for (float j = 0; j < maxJ; j += 0.25) {
@@ -303,6 +297,10 @@ void ofApp::drawMatrix(float startTime) {
             
             lineH = ofMap(matrixTDiff, 0, 1, 140, defaultAmp * 1.2);
             ofSetLineWidth(ofMap(matrixTDiff, 0, 1, 2, 1.5));
+            
+            if (matrixTDiff == 1) {
+                isDrawWhite = true;
+            }
             
             switch(i%4) {
                 case 0:
