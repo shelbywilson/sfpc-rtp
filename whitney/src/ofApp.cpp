@@ -115,7 +115,7 @@ void ofApp::drawBlue() {
     blueT += 0.001;
     
     if (blueT > 2) {
-        r = ofMap(MIN((blueT - 2) * 5, 3), 0, 3, defaultAmp * 1.07, ofGetHeight * 0.45);
+        r = ofMap(MIN((blueT - 2) * 5, 3), 0, 3, defaultAmp * 1.07, ofGetHeight() * 0.45);
     }
     
     while (currDeg > 0) {
