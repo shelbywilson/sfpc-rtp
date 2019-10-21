@@ -36,7 +36,7 @@ class ofApp : public ofBaseApp{
     
         float t;
     
-        float cues [4] = {2, 10.5, 15, 21};
+        float cues [4] = {3, 11.5, 16, 22};
     
         // global
         int defaultAmp = 260; // size of the rose
